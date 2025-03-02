@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://fontawesome.com/v4/assets/font-awesome/css/font-awesome.css">
+  <link href="https://getbootstrap.com/docs/5.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <script src="/docs/5.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="mystyle.css">
+  <link rel="stylesheet" id="lowBat" href="lowbattery.svg">
+  <script>
+    degrees  = 45;
+  </script>
+
+  <style>
+    @font-face {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 300;
+      font-stretch: normal;
+      src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsiH0B4gaVc.ttf) format('truetype');
+    }
+    @font-face {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 500;
+      font-stretch: normal;
+      src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsjr0B4gaVc.ttf) format('truetype');
+    }
+    @font-face {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 600;
+      font-stretch: normal;
+      src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsgH1x4gaVc.ttf) format('truetype');
+    }
+    @font-face {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 700;
+      font-stretch: normal;
+      src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgsg-1x4gaVc.ttf) format('truetype');
+    }
+    @font-face {
+      font-family: 'Open Sans';
+      font-style: normal;
+      font-weight: 800;
+      font-stretch: normal;
+      src: url(https://fonts.gstatic.com/s/opensans/v34/memSYaGs126MiZpBA-UvWbX2vVnXBbObj2OVZyOOSr4dVJWUgshZ1x4gaVc.ttf) format('truetype');
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Open Sans", sans-serif;
+      font-size: 14px;
+      color: #2d3a51;
+      line-height: 1.4;
+      padding: 0.5rem;
+    }
+    .alert {
+      position: relative;
+      padding: 0;
+      min-width: 250px;
+    }
+    .alert button.close {
+      margin: 0.45rem 1rem;
+      opacity: 0.75;
+    }
+    .alert button.close:hover {
+      opacity: 1;
+    }
+    .alert-icon,
+    .alert-text {
+      display: table-cell;
+      vertical-align: middle;
+    }
+    .alert-icon {
+      min-width: 40px;
+      text-align: center;
+      font-size: 2.2rem;
+      color: white;
+      background-color: rgba(0, 0, 0, 0.25);
+      padding: 1rem;
+    }
+    .alert-text {
+      color: #2d3a51;
+      padding: 2.4rem;
+      width: 100%;
+    }
+    .alert-text > h5 {
+      margin-top: 0;
+      font-weight: 600;
+    }
+    .alert .alert-link {
+      font-weight: normal;
+      color: #4790e6;
+    }
+    .alert ul {
+      margin: 0;
+    }
+    .alert ul li {
+      margin-bottom: 0.2rem;
+    }
+    .alert ul li:last-child {
+      margin-bottom: 0;
+    }
+    .alert-warning {
+      background-color: #fff8f5;
+      border-color: #ffccb3;
+    }
+    .alert-warning .alert-text h5 {
+      color: #ff5400;
+    }
+    .alert-warning button.close {
+      color: #ff5400;
+    }
+    .alert-warning .alert-icon {
+      background-color: #ff5400;
+    }
+  </style>
+
+  <svg style='display: none'>
+    <defs>
+      <!-- all your icon definitions -->
+      <symbol id='icon_lowBat' width="auto" viewBox="0 0 450 450" preserveAspectRatio="xMidYMid meet">
+        <g transform="translate(0.000000,450.000000) scale(0.100000,-0.100000)"
+        fill="#000000" stroke="none">
+        <path d="M1938 3675 c-8 -19 -8 -28 2 -40 11 -13 55 -15 310 -15 255 0 299 2
+        310 15 10 12 10 21 2 40 l-12 25 -300 0 -300 0 -12 -25z"/>
+        <path d="M1585 3491 c-51 -23 -93 -65 -116 -116 -17 -37 -19 -73 -19 -416 l0
+        -376 -78 -99 c-94 -118 -152 -211 -177 -279 -17 -50 -32 -303 -34 -597 l-1
+        -107 -84 -64 -84 -63 28 -34 28 -34 45 37 c25 20 48 37 52 37 4 0 4 -31 0 -69
+        l-7 -68 38 -7 c47 -9 54 1 54 82 0 65 7 74 37 45 10 -10 33 -31 51 -47 l32
+        -30 30 29 31 30 -85 80 -85 80 9 303 c5 167 12 318 16 335 11 51 58 137 121
+        221 l58 78 5 -743 c6 -831 0 -770 79 -842 22 -19 57 -40 78 -46 53 -15 1234
+        -15 1287 0 21 6 58 28 81 50 78 72 75 39 75 852 l0 720 21 -19 c38 -34 136
+        -191 154 -245 15 -45 19 -106 25 -359 l7 -305 -84 -80 -84 -80 30 -29 30 -29
+        54 47 c30 25 57 46 61 46 3 0 6 -31 6 -69 0 -39 4 -73 10 -76 5 -3 26 -3 45 1
+        l36 6 -7 71 c-8 78 -9 77 60 23 l39 -30 23 30 c13 16 24 32 24 36 0 4 -36 33
+        -79 65 l-80 58 -1 85 c-1 47 -5 195 -9 330 -7 244 -7 245 -38 317 -33 77 -90
+        163 -185 279 l-58 71 0 374 c-1 398 -3 416 -51 478 -13 16 -46 42 -73 56 l-50
+        25 -625 0 c-586 0 -629 -2 -666 -19z m1300 -81 c81 -39 75 68 75 -1260 l0
+        -1182 -38 -38 c-33 -34 -45 -39 -102 -45 -36 -3 -318 -5 -627 -3 -549 3 -562
+        3 -589 24 -15 11 -37 33 -48 48 -21 27 -21 31 -21 1199 0 1148 0 1173 20 1205
+        10 17 37 41 60 52 39 19 61 20 634 20 572 0 596 -1 636 -20z"/>
+        <path d="M1736 2874 c-9 -8 -16 -21 -16 -27 0 -7 27 -40 60 -74 33 -34 60 -65
+        60 -69 0 -4 -27 -34 -60 -66 -63 -63 -66 -68 -50 -99 18 -33 49 -22 116 43
+        l65 62 62 -62 c63 -62 83 -72 105 -50 23 23 12 47 -48 111 l-59 64 55 54 c58
+        58 74 90 54 114 -23 28 -52 16 -113 -45 l-60 -61 -62 61 c-66 63 -84 70 -109
+        44z"/>
+        <path d="M2422 2878 c-23 -23 -12 -47 48 -111 l59 -64 -59 -58 c-60 -59 -72
+        -89 -48 -113 22 -22 43 -12 103 48 33 33 62 60 65 60 3 0 33 -27 67 -60 64
+        -63 95 -74 113 -41 17 32 13 39 -50 99 -33 32 -60 62 -60 68 0 5 27 36 60 69
+        64 63 69 75 44 99 -26 26 -43 19 -110 -45 l-64 -62 -60 62 c-61 61 -85 72
+        -108 49z"/>
+        <path d="M2113 2115 c-57 -16 -148 -58 -175 -83 -23 -20 -23 -59 1 -71 14 -8
+        36 -1 97 30 151 77 279 77 426 0 75 -39 78 -39 99 -22 16 12 20 23 15 39 -9
+        28 -114 86 -192 106 -75 19 -201 20 -271 1z"/>
+        <path fill="#FF8000" d="M2640 1700 c-249 -112 -234 -105 -580 -258 -173 -77 -333 -148 -355
+        -158 l-40 -19 -3 -108 c-1 -62 2 -115 8 -127 11 -20 21 -20 571 -20 367 0 567
+        4 580 10 18 10 19 25 19 385 0 294 -3 375 -12 374 -7 0 -92 -36 -188 -79z"/>
+        </g>
+      </symbol>
+      <symbol id='icon_warning' viewBox="0 0 512 512"><path d="M256 32c14.2 0 27.3 7.5 34.5 19.8l216 368c7.3 12.4 7.3 27.7 .2 40.1S486.3 480 472 480H40c-14.3 0-27.6-7.7-34.7-20.1s-7-27.8 .2-40.1l216-368C228.7 39.5 241.8 32 256 32zm0 128c-13.3 0-24 10.7-24 24V296c0 13.3 10.7 24 24 24s24-10.7 24-24V184c0-13.3-10.7-24-24-24zm32 224c0-17.7-14.3-32-32-32s-32 14.3-32 32s14.3 32 32 32s32-14.3 32-32z"/></svg>
+    </defs>
+  </svg>
+
+
+</head>
+
+<body>
+
+
+  <div class="container alert alert-warning" style="width: 90%; margin-top: 20px;" >
+    <div class="row ">
+      <div class="col-sm-3" >
+        <div style="background-color: #ff5400; height: 100%; width: 100%;">
+          <div class="alert-icon" style="background-color: #ff5400; height: 100%; width: 100%;">
+            <svg class='svg-icon' style="width: 50%; fill:white;"><use xlink:href='#icon_warning'></use></svg>
+            <h5>CẢNH BÁO</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-7 ">
+        <div class="alert-text">
+          <h5>PIN YẾU</h5>
+          <ul>
+            <li>TRẠM GIÁM SÁT: 6</li>
+            <li>Phần Trăm Pin: 30%</li>
+            <li>Điện Áp Pin: 3.9V</li>
+          </ul>
+          <br>
+          <h5>LƯU Ý: Thiết bị cần 4 giờ để sạc đầy.</h5>
+        </div>
+      </div>
+
+      <div class="col-sm-2 text-center">
+        <svg class='svg-icon' style="width: 100%;"><use xlink:href='#icon_lowBat'></use></svg>
+      </div>
+
+
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- <div class="alert alert-help">
+    <div class="alert-icon">
+      <i class="glyphicon glyphicon-question-sign"></i>
+    </div>
+    <div class="alert-text">
+      <h5>Help</h5>
+      Indicates neutral informative to aid in understanding.
+    </div>
+  </div>
+  
+  <div class="alert alert-info">
+    <div class="alert-icon">
+      <i class="glyphicon glyphicon-info-sign"></i>
+    </div>
+    <div class="alert-text">
+      <h5>Info</h5>
+      Indicates a neutral informative change or action. I am intentionally long to demonstrate what it should look like within the new alert and I also <a href="#" class="alert-link">hyperlink</a> out to things and stuff.
+    </div>
+  </div>
+  
+  <div class="alert alert-danger">
+    <button type="button" class="close">&times;</span></button>
+    <div class="alert-icon">
+      <i class="glyphicon glyphicon-remove-sign"></i>
+    </div>
+    <div class="alert-text">
+      <h5>Error</h5>
+      Indicates a warning that might need attention.
+    </div>
+  </div>
+  
+  <div class="alert alert-success">
+    <div class="alert-icon">
+      <i class="glyphicon glyphicon-ok-circle"></i>
+    </div>
+    <div class="alert-text">
+      <h5>Success</h5>
+      Indicates a successful or positive action.
+    </div>
+  </div> -->
+</body>
+</html>
+
+<!-- Make a bootstrap html file with 2 columns -->
