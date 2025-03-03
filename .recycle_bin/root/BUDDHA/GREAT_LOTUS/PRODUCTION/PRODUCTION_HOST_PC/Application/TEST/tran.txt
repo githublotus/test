@@ -1,0 +1,56 @@
+Hello and welcome to the first video of the beginner course for Enelen.
+In this course we will be covering all of the basics that you need to know to get started with Enelen.
+In this video we'll be covering an introduction to automation.
+My name is Maxim and I'm a marketing and data content creator as well as instructor for Le Vagon, a French training company.
+I've been working with NHN for over 4 years now, built over 100 workflows and trained 500 students at improving their marketing and data automation.
+Today we're going to be talking about an introduction to automation.
+Why do we need automation?
+What is it?
+What are the core concepts?
+What is a workflow?
+As well as some best practices to help you get started first of all.
+Why do we need automation?
+The whole reason we need automation is to make data-driven decisions.
+When we take decisions based on feeling or intuition, it is subject to interpretation.
+It is subjective.
+This makes it difficult to estimate, estimate and justify the return on investment and often incurs wasted resources, whether they be budgetary or time related.
+However, when we take a data-driven approach.
+This makes it much more logic driven and objective.
+It'll improve your capacity to report and increase your visibility on ROI as well as requiring fewer resources, human resources, budgetary and in terms of time.
+Automation is the key to being data-driven when tasks are executed manually.
+We have a lot of wasted time.
+We have human error from repeated low value tasks as well as high human resource requirements.
+This leads to low employee happiness and retention.
+No one is happy to be doing low value tasks, for example copying data from 1 spreadsheet to another.
+However, when we start to integrate automation, we gain much more predictability and data availability.
+Increased employee efficiency because each employee can now focus their efforts on much higher value tasks.
+This leads to higher ROI and lower needs for human resources.
+So what is automation?
+Let's start with the definition.
+Automation is a predictable set of predetermined actions that transfers data from one point to another.
+This is a very wordy definition.
+Instead of breaking it down like this, I would like to show you an example.
+Here we can see an example of a workflow.
+So we have a form submission.
+When the form is submitted, we check what kind of company is submitting the form.
+If we cannot find a company, we ignore if it's a low value company.
+We can add the person submitting the form to an e-mail sequence.
+If it's a high value company, we can add the information to a Google Sheets.
+And if it's an ideal customer, then we can give this information to an account manager ASAP.
+So as you can see here, we have a predictable set of predetermined actions.
+Depending on which kind of company is submitting the form, we have a very.
+Predictable set of actions that need to be executed and we have a data transfer from one point to another, the starting point being the form submission.
+And depending on what kind of company is submitting the form, we're going to be transferring the data to either an e-mail tool, a Google Sheets, or for example Slack to notify the account manager.
+As you can imagine, if we do not have a predictable set of predetermined actions, and depending on the kind of company, we weren't able to say if it's this kind of company we do this, if it's that kind of company we do that, then we wouldn't be able to create an automation because we would have to have some kind of human intervention.
+Again, if we do not have any data transfer, then we're not really automating anything, so the data transfer.
+Explains itself.
+I'd like to cover some core concepts of automation that are important to understand before building your first workflows.
+The first thing I'd like to talk about is a trigger.
+A trigger is what starts an automation.
+So from the example that we looked at earlier, we can see that the trigger was the form submission when we're going to be drawing out these automations.
+We're going to see that the trigger is not going to have an entry arrow, only an exit arrow.
+There are many different kinds of triggers.
+A trigger can be manual, so executed manually.
+It can be scheduled, so every minute, every day at 8:00 AM, once a month at 4:00 PM.
+Or it can be linked to applications that we can trigger workflow when we receive a webhook, when a property is updated in the CRM, or when, for example, a form is submitted.
+Under the form submission block, you can see an example of an N8N node here the N8N form trigger.

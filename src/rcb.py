@@ -6,16 +6,54 @@ import shutil
 import time
 
 #TODO: /// USER CONFIGURATION ///////////////////////////////////////////////////////////////////
-RECYCLE_BIN_ROOT_DIR = "/root/test/.recycle_bin"
-MAX_CYCLE_BIN_SIZE_GB = 0.01
-MAX_STORE_DAY = 30
+RECYCLE_BIN_ROOT_DIR = "/root/test/.recycle_bin" # Thư mục chứa thùng rác
+MAX_CYCLE_BIN_SIZE_GB = 20                       # Dung lượng tối đa của thùng rác
+MAX_STORE_DAY = 30                               # Số ngày tồn tại tối đa của file trong thùng rác
 
-CHECK_FILE_SIZE_AND_TYPE = False
-MAX_FILE_SIZE_MB = 1000
-IGNORE_FILE_TYPE = [".vpd", ".fsdb"]
-
+CHECK_FILE_SIZE_AND_TYPE = True                  # Kiểm tra kích thước và kiểu dữ liệu của file
+MAX_FILE_SIZE_MB = 1000                          # Kích thước tối đa của file
+IGNORE_FILE_TYPE = [".vpd", ".fsdb"]             # Loại file không được lưu trữ trong thùng rác
+#TODO://////////////////////////////////////////////////////////////////////////////////////////
 
 #\/// DAILY TASK ///////////////////////////////////////////////////////////////////////////////
+def handle_daily_maintenance():
+    # 1. Kiểm tra và xóa các file có thời gian tồn tại lớn hơn MAX_STORE_DAY
+    # 2. Kiểm tra và xóa các file có kích thước lớn hơn MAX_FILE_SIZE_MB
+    # 3. Kiểm tra và xóa các file có kiểu dữ liệu không nằm trong IGNORE_FILE_TYPE
+    # 4. Kiểm tra dung lượng của thư mục RECYCLE_BIN_ROOT_DIR, nếu lớn hơn MAX_CYCLE_BIN_SIZE_GB thì xóa các file có thời gian tồn tại lớn nhất.
+    ### TASK 1 ###
+    cleanup_old_files()
+    ### TASK 2 & 3 ###
+    if CHECK_FILE_SIZE_AND_TYPE:
+      check_file_size_and_type()
+    ### TASK 4 ###
+    keep_recycle_bin_in_max()
+
+def check_file_size_and_type():
+    """
+    Kiểm tra và xóa các file trong thùng rác dựa trên:
+    - Kích thước file > MAX_FILE_SIZE_MB
+    - File có đuôi nằm trong IGNORE_FILE_TYPE
+    """
+    for dir_path, dir_names, file_names in os.walk(RECYCLE_BIN_ROOT_DIR):
+        for file_name in file_names:
+            file_path = os.path.join(dir_path, file_name)
+
+            # Kiểm tra kích thước file
+            file_size = os.path.getsize(file_path)
+            if file_size > MAX_FILE_SIZE_MB * (1024 ** 2):
+                os.remove(file_path)
+                print(f"Đã xóa file vượt quá kích thước cho phép: {file_path}")
+                continue
+
+            # Kiểm tra loại file
+            if any(file_name.endswith(ext) for ext in IGNORE_FILE_TYPE):
+                os.remove(file_path)
+                print(f"Đã xóa file thuộc loại bị cấm: {file_path}")
+
+    # Dọn dẹp thư mục rỗng sau khi xóa file
+    removeEmptyDirs(RECYCLE_BIN_ROOT_DIR)
+
 def keep_recycle_bin_in_max():
     max_size_bytes = MAX_CYCLE_BIN_SIZE_GB * (1024 ** 3)
 
@@ -98,23 +136,8 @@ def move_to_recycle_bin(arg_list: list):
                     if not os.path.exists(recycle_dir):
                         os.makedirs(recycle_dir)
 
-                    if CHECK_FILE_SIZE_AND_TYPE:
-                        checkResult = ""
-                        if os.path.isfile(original_path):
-                            dir_path = os.path.dirname(original_path)
-                            file_names = []
-                            file_names.append(os.path.basename(original_path))
-                            checkResult = check_and_remove_large_and_ignore_files(dir_path, file_names)
-                            if checkResult != "deleted":
-                                shutil.move(filepath, recycle_path)
-                        else:
-                            for dir_path, dir_names, file_names in os.walk(original_path):
-                                check_and_remove_large_and_ignore_files(dir_path, file_names)
-                            shutil.move(filepath, recycle_path)
-                            removeEmptyDirs(recycle_dir)
-                    else:
-                        shutil.move(filepath, recycle_path)
-                        removeEmptyDirs(recycle_dir)
+                    shutil.move(filepath, recycle_path)
+                    removeEmptyDirs(recycle_dir)
 
                 except:
                     print(f"\033[91mFile/Directory '{filepath}' not found in '{current_dir}'\033[0m")
@@ -315,30 +338,36 @@ if __name__ == '__main__':
     ############################################
     #2. Xử lý các lệnh Command
     ############################################
+    ### a. List Group ###
     if command == "ls":
           handle_ls(path)
     elif command == "path" or command == "dir":
         handle_path_dir(path)
     elif command == "tree":
         handle_tree(path)
-    elif command == "clean":
-        handle_clean(path)
-    elif command == "empty":
-        handle_empty()
-    elif command == "restore":
-        if len(sys.argv) < 3:
-            print("Usage: rcb.py restore <file/dir/all>")
-            sys.exit(1)
-        handle_restore(sys.argv)
-    elif command in ["help", "-h", "--help"]:
-        print_help()
+    ### b. Del/Restore Group ###
     elif command == "delete":
         if len(sys.argv) < 3:
             print("Usage: rcb.py delete <file_path>")
             sys.exit(1)
-        move_to_recycle_bin(sys.argv)
+        move_to_recycle_bin(sys.argv[2:])
+    elif command == "restore":
+        if len(sys.argv) < 3:
+            print("Usage: rcb.py restore <file/dir/all>")
+            sys.exit(1)
+        handle_restore(sys.argv[2:])
+    elif command == "clean":
+        handle_clean(path)
+    elif command == "empty":
+        handle_empty()
+    ### c. Info/Help Group ###
     elif command == "info":
         handle_info()
+    elif command in ["help", "-h", "--help"]:
+        print_help()
+    ### d. Other ###
+    elif command == "daily_maintenance":
+        handle_daily_maintenance()
     else:
         print_help()
 
