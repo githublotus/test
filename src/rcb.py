@@ -4,16 +4,26 @@ import os
 import sys
 import shutil
 import time
+import datetime
 
-#TODO: /// USER CONFIGURATION ///////////////////////////////////////////////////////////////////
-RECYCLE_BIN_ROOT_DIR = "/root/test/.recycle_bin" # Thư mục chứa thùng rác
-MAX_CYCLE_BIN_SIZE_GB = 20                       # Dung lượng tối đa của thùng rác
-MAX_STORE_DAY = 30                               # Số ngày tồn tại tối đa của file trong thùng rác
+# Đọc cấu hình từ file rcb.conf
+def load_config():
+    config = {}
+    with open(os.path.join(os.path.dirname(__file__), 'rcb.conf')) as f:
+        exec(f.read(), config)
+    return config
 
-CHECK_FILE_SIZE_AND_TYPE = True                  # Kiểm tra kích thước và kiểu dữ liệu của file
-MAX_FILE_SIZE_MB = 1000                          # Kích thước tối đa của file
-IGNORE_FILE_TYPE = [".vpd", ".fsdb"]             # Loại file không được lưu trữ trong thùng rác
-#TODO://////////////////////////////////////////////////////////////////////////////////////////
+# Load các biến cấu hình
+config = load_config()
+RECYCLE_BIN_ROOT_DIR = config['RECYCLE_BIN_ROOT_DIR']
+MAX_CYCLE_BIN_SIZE_GB = config['MAX_CYCLE_BIN_SIZE_GB']
+MAX_STORE_DAY = config['MAX_STORE_DAY']
+CHECK_FILE_SIZE_AND_TYPE = config['CHECK_FILE_SIZE_AND_TYPE']
+MAX_FILE_SIZE_MB = config['MAX_FILE_SIZE_MB']
+IGNORE_FILE_TYPE = config['IGNORE_FILE_TYPE']
+RECYCLE_BIN_EXPIRE_YYYYMMDD = config['RECYCLE_BIN_EXPIRE_YYYYMMDD']
+
+
 
 #\/// DAILY TASK ///////////////////////////////////////////////////////////////////////////////
 def handle_daily_maintenance():
@@ -119,31 +129,35 @@ def check_and_remove_large_and_ignore_files(dir_path, file_names):
                 return "deleted"
 
 def move_to_recycle_bin(arg_list: list):
+    #Nếu ngày lớn hơn RECYCLE_BIN_EXPIRE_YYYYMMDD thì rm như lệnh thường
     for filepath in arg_list:
         if filepath.startswith('-'):
             continue # skip the option
         else:
-            if RECYCLE_BIN_ROOT_DIR in filepath or "@RCB/" in filepath:
-                filepath = filepath.replace("@RCB",RECYCLE_BIN_ROOT_DIR)
-                os.system("rm -rdf '{}'".format(filepath)) #User xóa file từ thùng rác.
-                print("\033[91mDeleted file from Recycle Bin: {}\033[0m".format(filepath))
+            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+            if current_date <= RECYCLE_BIN_EXPIRE_YYYYMMDD:
+                if RECYCLE_BIN_ROOT_DIR in filepath or "@RCB/" in filepath:
+                    filepath = filepath.replace("@RCB",RECYCLE_BIN_ROOT_DIR)
+                    os.system("rm -rdf '{}'".format(filepath)) #User xóa file từ thùng rác.
+                    print("\033[91mDeleted file from Recycle Bin: {}\033[0m".format(filepath))
+                else:
+                    current_dir = os.path.abspath(os.getcwd())
+                    try:
+                        original_path = os.path.join(current_dir, filepath)
+                        recycle_path = get_recycle_path(filepath)
+                        recycle_dir = os.path.dirname(recycle_path)
+                        if not os.path.exists(recycle_dir):
+                            os.makedirs(recycle_dir)
+
+                        shutil.move(filepath, recycle_path)
+                        removeEmptyDirs(recycle_dir)
+
+                    except:
+                        print(f"\033[91mFile/Directory '{filepath}' not found in '{current_dir}'\033[0m")
+                    finally:
+                        os.system("rm -rdf '{}'".format(filepath)) #Đảm bảo file/folder được xóa
             else:
-                current_dir = os.path.abspath(os.getcwd())
-                try:
-                    original_path = os.path.join(current_dir, filepath)
-                    recycle_path = get_recycle_path(filepath)
-                    recycle_dir = os.path.dirname(recycle_path)
-                    if not os.path.exists(recycle_dir):
-                        os.makedirs(recycle_dir)
-
-                    shutil.move(filepath, recycle_path)
-                    removeEmptyDirs(recycle_dir)
-
-                except:
-                    print(f"\033[91mFile/Directory '{filepath}' not found in '{current_dir}'\033[0m")
-                finally:
-                    os.system("rm -rdf '{}'".format(filepath)) #Đảm bảo file/folder được xóa
-
+                os.system("rm -rdf '{}'".format(filepath)) #Đảm bảo file/folder được xóa
 def removeEmptyDirs(dir_path):
     for dir_path, dir_names, file_names in os.walk(dir_path, topdown=False):
         for dir_name in dir_names:
@@ -277,7 +291,28 @@ def handle_info():
         print("\033[92mIgnore files : {}\033[0m".format(IGNORE_FILE_TYPE))
     else:
         print("\033[92mCheck file size and type: False\033[0m")
-    print("\033[92mRecycle Bin Alive: {}/{} days {}\033[0m".format("30","365",""))
+    #Kiểm tra thời gian timestamp của file rcb_daily_scan.log:
+    # + Nếu < 24h thì LAST_CHECK_DATE = "Today"
+    # + Nếu > 24h và nhỏ hơn 48h thì LAST_CHECK_DATE = "Yesterday"
+    # + Nếu > 48h thì LAST_CHECK_DATE = "Didn't check in {xxx} days"
+    print("\033[92mRecycle Bin Expired Date: {} - Last check: \033[0m".format(RECYCLE_BIN_EXPIRE_YYYYMMDD),end="")
+    if not os.path.exists("rcb_daily_scan.log"):
+        LAST_CHECK_DATE = "Not Found: rcb_daily_scan.log!!!"
+        print("\033[1;7;91m ⛔ {} \033[0m".format(LAST_CHECK_DATE))
+    else:
+        logTimeStamp = time.time() - os.path.getmtime("rcb_daily_scan.log")
+        if logTimeStamp > 24*60*60:
+            if logTimeStamp > 2*24*60*60:
+                LAST_CHECK_DATE = "⛔  Didn't check in {} days!!!".format(int(logTimeStamp/(24*60*60)))
+                print("\033[1;7;91m ⛔ {} \033[0m".format(LAST_CHECK_DATE))
+            else:
+                LAST_CHECK_DATE = "⚠️  Yesterday"
+                print("\033[1;93m {} \033[0m".format(LAST_CHECK_DATE))
+        else:
+            LAST_CHECK_DATE = "Today"
+            print("\033[92m {} \033[0m".format(LAST_CHECK_DATE))
+
+
 
     # Tìm 10 file lớn nhất
     all_files = [(os.path.join(dp, f), os.path.getsize(os.path.join(dp, f))) for dp, dn, filenames in os.walk(RECYCLE_BIN_ROOT_DIR) for f in filenames]
@@ -444,3 +479,5 @@ if __name__ == '__main__':
 # print('\033[8;93m hide yellow\033[m')
 # print('\033[1;7;21;93m bold reversed yellow\033[m')
 # time.sleep(5)
+
+
